@@ -8,12 +8,6 @@ class SlideshowScroll extends Phaser.Scene {
         this.SCROLLSTYLE = 'Quad';
     }
 
-    preload() {
-        // load assets
-        this.load.path = "./assets/";
-        
-    }
-
     create() {
         // setup tilemap
         const map = this.add.tilemap("snapmap");
@@ -32,16 +26,18 @@ class SlideshowScroll extends Phaser.Scene {
         //     //faceColor: new Phaser.Display.Color(40, 40, 40, 255)
         // });
 
-        // set camera and physics bounds
-        this.cam = this.cameras.main;
-        this.cam.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-        //this.cam.setOrigin(0);
-        this.physics.world.bounds.setTo(0, 0, map.widthInPixels, map.heightInPixels);
-
         // create player with physics properties
-        this.p1 = this.physics.add.sprite(this.cam.centerX, this.cam.centerY, 'skull');
+        this.p1 = this.physics.add.sprite(centerX, centerY, 'skull');
         this.p1.body.setCollideWorldBounds(true);
         this.p1.scrollLock = false; // to prevent movement during cam scrolling
+
+        // set camera properties
+        this.cam = this.cameras.main;
+        this.cam.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+        this.cam.centerOn(this.p1.x, this.p1.y);
+
+        // set physics bounds
+        this.physics.world.bounds.setTo(0, 0, map.widthInPixels, map.heightInPixels);
 
         // set physics colliders
         this.physics.add.collider(this.p1, collisionLayer);
@@ -49,9 +45,16 @@ class SlideshowScroll extends Phaser.Scene {
         // define cursor key input
         cursors = this.input.keyboard.createCursorKeys();
 
+        // enable scene switcher / reload keys
+        this.swap = this.input.keyboard.addKey('S');
+        this.reload = this.input.keyboard.addKey('R');
+
         // debug text
         this.debug = this.add.bitmapText(16, h-48, 'gem', '', 12);
         this.debug.setScrollFactor(0); 
+
+        // update instruction text
+        document.getElementById('info').innerHTML = '<strong>SlideshowScroll.js</strong>: Move w/ arrows. S for next scene, R to Restart scene';
     }
 
     update() {
@@ -77,7 +80,15 @@ class SlideshowScroll extends Phaser.Scene {
             if(cursors.down.isDown) {
                 this.p1.body.setVelocityY(this.VEL);
             } 
-        } 
+        }
+        
+        // scene switching / restart
+        if(Phaser.Input.Keyboard.JustDown(this.reload)) {
+            this.scene.restart();
+        }
+        if(Phaser.Input.Keyboard.JustDown(this.swap)) {
+            this.scene.start("snapscrollScene");
+        }
 
         // debug text
         // this.debug.text = `CAMSCROLLX:${this.cam.scrollX.toFixed(2)}, CAMSCROLLY:${this.cam.scrollY.toFixed(2)}\nPX:${this.p1.x.toFixed(2)}, PY:${this.p1.y.toFixed(2)}\nCAMCENTERX:${this.cam.centerX}, CAMCENTERY:${this.cam.centerY}`;
@@ -87,7 +98,7 @@ class SlideshowScroll extends Phaser.Scene {
     // assumes object has 0.5 origin
     // calculations in camera pans need to use cam.centerX/centerY b/c pans are relative to camera center
     checkCamBounds(obj, cam) {
-        if(obj.x + Math.abs(obj.width/2) > cam.width + cam.scrollX) {
+        if(obj.x + obj.width/2 > cam.width + cam.scrollX) {
             // PLAYER HITS RIGHT EDGE (SCROLL R->L)
             // lock player
             obj.scrollLock = true;
@@ -103,7 +114,7 @@ class SlideshowScroll extends Phaser.Scene {
             });
             // pan camera
             cam.pan(cam.scrollX + cam.centerX + cam.width, cam.scrollY + cam.centerY, this.SCROLLDURATION, this.SCROLLSTYLE);
-        } else if(obj.x - Math.abs(obj.width/2) < cam.scrollX) {
+        } else if(obj.x - obj.width/2 < cam.scrollX) {
             // PLAYER HITS LEFT EDGE (SCROLL L->R)
             // lock player
             obj.scrollLock = true;
@@ -119,7 +130,7 @@ class SlideshowScroll extends Phaser.Scene {
             });
             // pan camera
             cam.pan(cam.scrollX - cam.centerX, cam.scrollY + cam.centerY, this.SCROLLDURATION, this.SCROLLSTYLE);
-        } else if(obj.y + Math.abs(obj.height/2) > cam.height + cam.scrollY) {
+        } else if(obj.y + obj.height/2 > cam.height + cam.scrollY) {
             // PLAYER HITS BOTTOM EDGE (SCROLL BOTTOM -> TOP)
             // lock player
             obj.scrollLock = true;
@@ -135,7 +146,7 @@ class SlideshowScroll extends Phaser.Scene {
             });
             // pan camera
             cam.pan(cam.scrollX + cam.centerX, cam.scrollY + cam.centerY + cam.height, this.SCROLLDURATION, this.SCROLLSTYLE);
-        } else if(obj.y - Math.abs(obj.height/2) < cam.scrollY) {
+        } else if(obj.y - obj.height/2 < cam.scrollY) {
             // PLAYER HITS TOP EDGE (SCROLL TOP->BOTTOM)
             // lock player
             obj.scrollLock = true;

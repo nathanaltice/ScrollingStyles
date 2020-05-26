@@ -3,7 +3,7 @@ class SnapScroll extends Phaser.Scene {
         super("snapscrollScene");
 
         // vars
-        this.VEL = 150;
+        this.VEL = 175;
     }
 
     preload() {
@@ -34,16 +34,17 @@ class SnapScroll extends Phaser.Scene {
         //     //faceColor: new Phaser.Display.Color(40, 40, 40, 255)
         // });
 
-        // set camera and physics bounds
+        // create player with physics properties
+        this.p1 = this.physics.add.sprite(centerX*3, centerY*3, 'skull');
+        this.p1.body.setCollideWorldBounds(true);
+
+        // set camera properties
         this.cam = this.cameras.main;
         this.cam.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-        this.cam.setOrigin(0);
+        this.cam.centerOn(this.p1.x, this.p1.y);
+        
+        // set physics bounds
         this.physics.world.bounds.setTo(0, 0, map.widthInPixels, map.heightInPixels);
-
-        // create player with physics properties
-        this.p1 = this.physics.add.sprite(100, 100, 'skull');
-        this.p1.setScale(0.5);
-        this.p1.body.setCollideWorldBounds(true);
 
         // set physics colliders
         this.physics.add.collider(this.p1, collisionLayer);
@@ -51,12 +52,16 @@ class SnapScroll extends Phaser.Scene {
         // define cursor key input
         cursors = this.input.keyboard.createCursorKeys();
 
+        // enable scene switcher / reload keys
+        this.swap = this.input.keyboard.addKey('S');
+        this.reload = this.input.keyboard.addKey('R');
+
         // debug text
         this.debug = this.add.bitmapText(16, h-48, 'gem', '', 12);
         this.debug.setScrollFactor(0); 
 
-        // debug
-        this.scene.start("slideshowScene");
+        // update instruction text
+        document.getElementById('info').innerHTML = '<strong>SnapScroll.js</strong>: Move w/ arrows. S for next scene, R to Restart scene';
     }
 
     update() {
@@ -77,31 +82,38 @@ class SnapScroll extends Phaser.Scene {
         } 
         if(cursors.down.isDown) {
             this.p1.body.setVelocityY(this.VEL);
-        } 
+        }
+
+        // scene switching / restart
+        if(Phaser.Input.Keyboard.JustDown(this.reload)) {
+            this.scene.restart();
+        }
+        if(Phaser.Input.Keyboard.JustDown(this.swap)) {
+            this.scene.start("slideshowScene");
+        }
 
         // debug text
-        this.debug.text = `CAMSCROLLX:${this.cam.scrollX.toFixed(2)}, CAMSCROLLY:${this.cam.scrollY.toFixed(2)}\nPX:${this.p1.x}, PY:${this.p1.y}`;
-        
+        // this.debug.text = `CAMSCROLLX:${this.cam.scrollX.toFixed(2)}, CAMSCROLLY:${this.cam.scrollY.toFixed(2)}\nPX:${this.p1.x}, PY:${this.p1.y}`;
     }
 
     // check passed obj against passed camera bounds to scroll camera
-    // assumes object origin is 0.5 and cam origin is 0
+    // assumes object origin is 0.5
     // also relies upon player tile & physics world collisions to keep player inside world
     checkCamBounds(obj, cam) {
-        if(obj.x + Math.abs(obj.width/2) > cam.width + cam.scrollX) {
+        if(obj.x + obj.width/2 > cam.width + cam.scrollX) {
             // move camera
             cam.setScroll(cam.scrollX + cam.width, cam.scrollY);
             // move player
-            obj.x = cam.scrollX + Math.abs(obj.width/2);
-        } else if(obj.x - Math.abs(obj.width/2) < cam.scrollX) {
+            obj.x = cam.scrollX + obj.width/2;
+        } else if(obj.x - obj.width/2 < cam.scrollX) {
             cam.setScroll(cam.scrollX - cam.width, cam.scrollY);
-            obj.x = cam.scrollX + w - Math.abs(obj.width/2);
-        } else if(obj.y + Math.abs(obj.height/2) > cam.height + cam.scrollY) {
+            obj.x = cam.scrollX + w - obj.width/2;
+        } else if(obj.y + obj.height/2 > cam.height + cam.scrollY) {
             cam.setScroll(cam.scrollX, cam.scrollY + cam.height);
-            obj.y = cam.scrollY + Math.abs(obj.height/2);
-        } else if(obj.y - Math.abs(obj.height/2) < cam.scrollY) {
+            obj.y = cam.scrollY + obj.height/2;
+        } else if(obj.y - obj.height/2 < cam.scrollY) {
             cam.setScroll(cam.scrollX, cam.scrollY - cam.height);
-            obj.y = cam.scrollY + cam.height - Math.abs(obj.height/2);
+            obj.y = cam.scrollY + cam.height - obj.height/2;
         }
     }
 }
