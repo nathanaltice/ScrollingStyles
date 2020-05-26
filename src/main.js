@@ -2,7 +2,7 @@
 // Created: 4/26/10 (Phaser CE)
 // Updated: 5/25/20 (Phaser 3)
 // Scrolling Styles
-// Phaser 3 scrolling style demos of "snap" scrolling (eg, Adventure) and "slideshow" scrolling (eg, Zelda)
+// Phaser 3 scrolling style demos of "snap" scrolling (eg, Adventure) and "slideshow" scrolling (eg, Legend of Zelda)
 
 // CODE ARMOR
 'use strict';

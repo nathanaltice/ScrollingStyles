@@ -11,7 +11,7 @@ class SnapScroll extends Phaser.Scene {
         this.load.path = "./assets/";
         this.load.image("1bit_tiles", "map/colored_packed.png");    
         this.load.tilemapTiledJSON("snapmap", "map/snapmap.json");
-        this.load.atlasXML('sokoban_atlas', 'img/sokoban_spritesheet.png', 'img/sokoban_spritesheet.xml');
+        this.load.image('skull', 'img/skull.png');
         // load font
         this.load.bitmapFont('gem', 'font/gem.png', 'font/gem.xml');
     }
@@ -41,10 +41,8 @@ class SnapScroll extends Phaser.Scene {
         this.physics.world.bounds.setTo(0, 0, map.widthInPixels, map.heightInPixels);
 
         // create player with physics properties
-        this.p1 = this.physics.add.sprite(100, 100, 'sokoban_atlas', 'player_05.png');
-        console.log(this.p1.body.width);
+        this.p1 = this.physics.add.sprite(100, 100, 'skull');
         this.p1.setScale(0.5);
-        console.log(this.p1.body.width);
         this.p1.body.setCollideWorldBounds(true);
 
         // set physics colliders
@@ -53,10 +51,12 @@ class SnapScroll extends Phaser.Scene {
         // define cursor key input
         cursors = this.input.keyboard.createCursorKeys();
 
-        // debug
+        // debug text
         this.debug = this.add.bitmapText(16, h-48, 'gem', '', 12);
-        this.debug.setScrollFactor(0);
-        
+        this.debug.setScrollFactor(0); 
+
+        // debug
+        this.scene.start("slideshowScene");
     }
 
     update() {
@@ -68,22 +68,18 @@ class SnapScroll extends Phaser.Scene {
 
         if(cursors.left.isDown) {
             this.p1.body.setVelocityX(-this.VEL);
-            this.p1.setFlip(true, false);
         } 
         if(cursors.right.isDown) {
             this.p1.body.setVelocityX(this.VEL);
-            this.p1.resetFlip();
         } 
         if(cursors.up.isDown) {
             this.p1.body.setVelocityY(-this.VEL);
-            this.p1.setFlip(true, false);
         } 
         if(cursors.down.isDown) {
             this.p1.body.setVelocityY(this.VEL);
-            this.p1.resetFlip();
         } 
 
-        // debug
+        // debug text
         this.debug.text = `CAMSCROLLX:${this.cam.scrollX.toFixed(2)}, CAMSCROLLY:${this.cam.scrollY.toFixed(2)}\nPX:${this.p1.x}, PY:${this.p1.y}`;
         
     }
@@ -93,8 +89,9 @@ class SnapScroll extends Phaser.Scene {
     // also relies upon player tile & physics world collisions to keep player inside world
     checkCamBounds(obj, cam) {
         if(obj.x + Math.abs(obj.width/2) > cam.width + cam.scrollX) {
-            // move camera, then player
+            // move camera
             cam.setScroll(cam.scrollX + cam.width, cam.scrollY);
+            // move player
             obj.x = cam.scrollX + Math.abs(obj.width/2);
         } else if(obj.x - Math.abs(obj.width/2) < cam.scrollX) {
             cam.setScroll(cam.scrollX - cam.width, cam.scrollY);
