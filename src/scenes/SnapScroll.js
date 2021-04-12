@@ -20,8 +20,8 @@ class SnapScroll extends Phaser.Scene {
         // setup tilemap
         const map = this.add.tilemap("snapmap");
         const tileset = map.addTilesetImage("colored_packed", "1bit_tiles");
-        const bgLayer = map.createStaticLayer("bgLayer", tileset, 0, 0);
-        const collisionLayer = map.createDynamicLayer("collisionLayer", tileset, 0, 0);
+        const bgLayer = map.createLayer("bgLayer", tileset, 0, 0);
+        const collisionLayer = map.createLayer("collisionLayer", tileset, 0, 0);
 
         // set map collision
         collisionLayer.setCollisionByProperty({ collides: true });
@@ -93,7 +93,7 @@ class SnapScroll extends Phaser.Scene {
         }
 
         // debug text
-        // this.debug.text = `CAMSCROLLX:${this.cam.scrollX.toFixed(2)}, CAMSCROLLY:${this.cam.scrollY.toFixed(2)}\nPX:${this.p1.x}, PY:${this.p1.y}`;
+        this.debug.text = `CAMSCROLLX:${this.cam.scrollX.toFixed(2)}, CAMSCROLLY:${this.cam.scrollY.toFixed(2)}\nPX:${this.p1.x.toFixed(2)}, PY:${this.p1.y.toFixed(2)}`;
     }
 
     // check passed obj against passed camera bounds to scroll camera

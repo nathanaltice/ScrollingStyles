@@ -12,8 +12,8 @@ class SlideshowScroll extends Phaser.Scene {
         // setup tilemap
         const map = this.add.tilemap("snapmap");
         const tileset = map.addTilesetImage("colored_packed", "1bit_tiles");
-        const bgLayer = map.createStaticLayer("bgLayer", tileset, 0, 0);
-        const collisionLayer = map.createDynamicLayer("collisionLayer", tileset, 0, 0);
+        const bgLayer = map.createLayer("bgLayer", tileset, 0, 0);
+        const collisionLayer = map.createLayer("collisionLayer", tileset, 0, 0);
 
         // set map collision
         collisionLayer.setCollisionByProperty({ collides: true });
