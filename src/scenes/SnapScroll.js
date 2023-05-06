@@ -2,7 +2,6 @@ class SnapScroll extends Phaser.Scene {
     constructor() {
         super("snapscrollScene");
 
-        // vars
         this.VEL = 175;
     }
 
