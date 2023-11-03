@@ -1,11 +1,11 @@
 // Nathan Altice
 // Created: 4/26/20 (Phaser CE)
-// Updated: 2/1/23 (Phaser 3.55)
+// Updated: 11/3/23 (Phaser 3.60)
 // Scrolling Styles
 // Phaser 3 scrolling style demos of "snap" scrolling (eg, Adventure) and "slideshow" scrolling (eg, Legend of Zelda)
 
 // CODE ARMOR
-'use strict';
+'use strict'
 
 // define game object
 let config = {
@@ -26,11 +26,11 @@ let config = {
     scene: [ SnapScroll, SlideshowScroll ]
 }
 
-const game = new Phaser.Game(config);
+const game = new Phaser.Game(config)
 
 // global
-const centerX = game.config.width / 2;
-const centerY = game.config.height / 2;
-const w = game.config.width;
-const h = game.config.height;
-let cursors = null;
+const centerX = game.config.width / 2
+const centerY = game.config.height / 2
+const w = game.config.width
+const h = game.config.height
+let cursors = null
