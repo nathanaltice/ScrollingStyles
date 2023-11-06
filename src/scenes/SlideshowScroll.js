@@ -98,21 +98,17 @@ class SlideshowScroll extends Phaser.Scene {
     // assumes object has 0.5 origin
     // calculations in camera pans need to use cam.centerX/centerY b/c pans are relative to camera center
     checkCamBounds(obj, cam) {
-
-        // Anything repeated across function calls gets
-        // tossed in a "shared" variable
-
-        const sharedTweenProps = {
+        // Anything repeated across function calls gets tossed in a "shared" variable (addition by Nate Laffan)
+        const tweenProperties = {
           targets: obj,
           duration: this.SCROLLDURATION,
           ease: this.SCROLLSTYLE,
           onComplete: function () {
-            obj.scrollLock = false; // unlock player
+            obj.scrollLock = false  // unlock player
           },
-        };
+        }
 
-        const sharedPanProps = [this.SCROLLDURATION, this.SCROLLSTYLE];
-
+        const panProperties = [this.SCROLLDURATION, this.SCROLLSTYLE]
 
         if(obj.x + obj.width/2 > cam.width + cam.scrollX) {
             // PLAYER HITS RIGHT EDGE (SCROLL R->L)
@@ -121,59 +117,50 @@ class SlideshowScroll extends Phaser.Scene {
             // tween player
             this.tweens.add({
                 x: { from: obj.x, to: obj.x + obj.width },
-                ...sharedTweenProps, // shared properties are spread
+                ...tweenProperties, // shared properties are spread
             })
             // pan camera
             cam.pan(
                 cam.scrollX + cam.centerX + cam.width, 
                 cam.scrollY + cam.centerY, 
-                ...sharedPanProps // shared properties are spread
+                ...panProperties    // shared properties are spread
             )
         } else if(obj.x - obj.width/2 < cam.scrollX) {
             // PLAYER HITS LEFT EDGE (SCROLL L->R)
-            // lock player
             obj.scrollLock = true
-            // tween player
             this.tweens.add({
                 x: { from: obj.x, to: obj.x - obj.width },
-                ...sharedTweenProps, // shared properties are spread
+                ...tweenProperties, 
             })
-            // pan camera
             cam.pan(
                 cam.scrollX - cam.centerX, 
                 cam.scrollY + cam.centerY, 
-                ...sharedPanProps // shared properties are spread
-                )
+                ...panProperties 
+            )
         } else if(obj.y + obj.height/2 > cam.height + cam.scrollY) {
             // PLAYER HITS BOTTOM EDGE (SCROLL BOTTOM -> TOP)
-            // lock player
             obj.scrollLock = true
-            // tween player
             this.tweens.add({
                 y: { from: obj.y, to: obj.y + obj.height },
-                ...sharedTweenProps, // shared properties are spread
+                ...tweenProperties, 
             })
-            // pan camera
             cam.pan(
                 cam.scrollX + cam.centerX, 
                 cam.scrollY + cam.centerY + cam.height, 
-                ...sharedPanProps // shared properties are spread
-                )
+                ...panProperties 
+            )
         } else if(obj.y - obj.height/2 < cam.scrollY) {
             // PLAYER HITS TOP EDGE (SCROLL TOP->BOTTOM)
-            // lock player
             obj.scrollLock = true
-            // tween player
             this.tweens.add({
                 y: { from: obj.y, to: obj.y - obj.height },
-                ...sharedTweenProps, // shared properties are spread
+                ...tweenProperties, 
             })
-            // pan camera
             cam.pan(
               cam.scrollX + cam.centerX, 
               cam.scrollY - cam.centerY, 
-              ...sharedPanProps // shared properties are spread
-              )
+              ...panProperties 
+            )
         }
     }
 }
