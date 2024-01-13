@@ -3,12 +3,13 @@ class SlideshowScroll extends Phaser.Scene {
         super("slideshowScene")
     }
 
-    create() {
-        // vars
+    init() {
         this.VEL = 175
         this.SCROLLDURATION = 400
         this.SCROLLSTYLE = 'Quad'
+    }
 
+    create() {
         // setup tilemap
         const map = this.add.tilemap("snapmap")
         const tileset = map.addTilesetImage("colored_packed", "1bit_tiles")

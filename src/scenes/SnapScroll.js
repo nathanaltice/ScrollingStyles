@@ -3,20 +3,21 @@ class SnapScroll extends Phaser.Scene {
         super("snapscrollScene")
     }
 
+    init() {
+        this.VEL = 175
+    }
+
     preload() {
         // load visual assets
         this.load.path = "./assets/"
         this.load.image("1bit_tiles", "map/colored_packed.png")    
         this.load.tilemapTiledJSON("snapmap", "map/snapmap.json")
         this.load.image('skull', 'img/skull.png')
-
         // load font
         this.load.bitmapFont('gem', 'font/gem.png', 'font/gem.xml')
     }
 
     create() {
-        this.VEL = 175
-
         // setup tilemap
         const map = this.add.tilemap("snapmap")
         const tileset = map.addTilesetImage("colored_packed", "1bit_tiles")

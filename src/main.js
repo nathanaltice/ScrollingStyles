@@ -1,6 +1,6 @@
 // Nathan Altice
 // Created: 4/26/20 (Phaser CE)
-// Updated: 11/3/23 (Phaser 3.60)
+// Updated: 1/13/24 (Phaser 3.70)
 // Scrolling Styles
 // Phaser 3 scrolling style demos of "snap" scrolling (eg, Adventure) and "slideshow" scrolling (eg, Legend of Zelda)
 
