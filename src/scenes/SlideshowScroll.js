@@ -5,8 +5,8 @@ class SlideshowScroll extends Phaser.Scene {
 
     init() {
         this.VEL = 175
-        this.SCROLLDURATION = 400
-        this.SCROLLSTYLE = 'Quad'
+        this.SCROLLDURATION = 600
+        this.SCROLLSTYLE = 'Linear'
     }
 
     create() {
@@ -28,7 +28,7 @@ class SlideshowScroll extends Phaser.Scene {
         // })
 
         // create player with physics properties
-        this.p1 = this.physics.add.sprite(centerX, centerY, 'skull')
+        this.p1 = this.physics.add.sprite(centerX*3, centerY*3, 'kenny_sprites', 313)
         this.p1.body.setCollideWorldBounds(true)
         this.p1.scrollLock = false // to prevent movement during cam scrolling
 
@@ -63,25 +63,26 @@ class SlideshowScroll extends Phaser.Scene {
         this.checkCamBounds(this.p1, this.cam)
 
         // player movement
-        this.p1.body.setVelocity(0)
+        this.playerDirection = new Phaser.Math.Vector2()
 
         // only allow move if the camera isn't scrolling
         if(!this.p1.scrollLock) {
             if(cursors.left.isDown) {
-                this.p1.body.setVelocityX(-this.VEL)
-                this.p1.resetFlip()
+                this.playerDirection.x = -1
             } 
             if(cursors.right.isDown) {
-                this.p1.body.setVelocityX(this.VEL)
-                this.p1.setFlip(true, false)
+                this.playerDirection.x = 1
             } 
             if(cursors.up.isDown) {
-                this.p1.body.setVelocityY(-this.VEL)
+                this.playerDirection.y = -1
             } 
             if(cursors.down.isDown) {
-                this.p1.body.setVelocityY(this.VEL)
-            } 
+                this.playerDirection.y = 1
+            }
         }
+
+        this.playerDirection.normalize()
+        this.p1.setVelocity(this.VEL * this.playerDirection.x, this.VEL * this.playerDirection.y)
         
         // scene switching / restart
         if(Phaser.Input.Keyboard.JustDown(this.reload)) {

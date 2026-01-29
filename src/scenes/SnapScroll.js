@@ -10,9 +10,11 @@ class SnapScroll extends Phaser.Scene {
     preload() {
         // load visual assets
         this.load.path = "./assets/"
-        this.load.image("1bit_tiles", "map/colored_packed.png")    
+        this.load.image("1bit_tiles", "map/colored_packed.png")
+        this.load.spritesheet('kenny_sprites', 'map/colored_packed.png', {
+            frameWidth: 16
+        })    
         this.load.tilemapTiledJSON("snapmap", "map/snapmap.json")
-        this.load.image('skull', 'img/skull.png')
         // load font
         this.load.bitmapFont('gem', 'font/gem.png', 'font/gem.xml')
     }
@@ -36,7 +38,7 @@ class SnapScroll extends Phaser.Scene {
         // })
 
         // create player with physics properties
-        this.p1 = this.physics.add.sprite(centerX*3, centerY*3, 'skull')
+        this.p1 = this.physics.add.sprite(centerX*3, centerY*3, 'kenny_sprites', 222)
         this.p1.body.setCollideWorldBounds(true)
 
         // set camera properties
@@ -70,20 +72,23 @@ class SnapScroll extends Phaser.Scene {
         this.checkCamBounds(this.p1, this.cam)
 
         // player movement
-        this.p1.body.setVelocity(0)
+        this.playerDirection = new Phaser.Math.Vector2()
 
         if(cursors.left.isDown) {
-            this.p1.body.setVelocityX(-this.VEL)
+            this.playerDirection.x = -1
         } 
         if(cursors.right.isDown) {
-            this.p1.body.setVelocityX(this.VEL)
+            this.playerDirection.x = 1
         } 
         if(cursors.up.isDown) {
-            this.p1.body.setVelocityY(-this.VEL)
+            this.playerDirection.y = -1
         } 
         if(cursors.down.isDown) {
-            this.p1.body.setVelocityY(this.VEL)
+            this.playerDirection.y = 1
         }
+
+        this.playerDirection.normalize()
+        this.p1.setVelocity(this.VEL * this.playerDirection.x, this.VEL * this.playerDirection.y)
 
         // scene switching / restart
         if(Phaser.Input.Keyboard.JustDown(this.reload)) {
@@ -94,7 +99,7 @@ class SnapScroll extends Phaser.Scene {
         }
 
         // debug text for camera testing
-        this.debug.text = `CAMSCROLLX:${this.cam.scrollX.toFixed(2)}, CAMSCROLLY:${this.cam.scrollY.toFixed(2)}\nPX:${this.p1.x.toFixed(2)}, PY:${this.p1.y.toFixed(2)}`
+        // this.debug.text = `CAMSCROLLX:${this.cam.scrollX.toFixed(2)}, CAMSCROLLY:${this.cam.scrollY.toFixed(2)}\nPX:${this.p1.x.toFixed(2)}, PY:${this.p1.y.toFixed(2)}`
     }
 
     // check passed obj against passed camera bounds to scroll camera
